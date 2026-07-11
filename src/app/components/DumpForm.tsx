@@ -20,10 +20,27 @@ export default function DumpForm() {
       return;
     }
 
-    await supabase.from("entries").insert({
-      content,
-      user_id: user.id,
+    const { data: entry } = await supabase
+      .from("entries")
+      .insert({ content, user_id: user.id })
+      .select()
+      .single();
+    console.log("entry:", entry);
+
+    const response = await fetch("/api/reflect", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
     });
+    const { reflection } = await response.json();
+    console.log("reflection:", reflection);
+
+    const updateResult = await supabase
+      .from("entries")
+      .update({ ai_reflection: reflection })
+      .eq("id", entry.id);
+
+    console.log("update result:", updateResult);
 
     router.push("/dashboard");
   }
