@@ -7,14 +7,22 @@ async function DashboardPage() {
   if (!user.user) {
     redirect("/login");
   }
+
+  const { data: entries, error: err2 } = await supabase
+    .from("entries")
+    .select("id, ai_reflection, created_at, content")
+    .eq("user_id", user.user.id)
+    .order("created_at", { ascending: false });
   return (
     <>
       <h1>Past Entries</h1>
-      <ol>
-        <li></li>
-        <li></li>
-        <li></li>
-      </ol>
+      {entries?.map((entry) => (
+        <li key={entry.id}>
+          <p>{entry.content}</p>
+          <p>{entry.ai_reflection}</p>
+          <p>{entry.created_at}</p>
+        </li>
+      ))}
 
       <button>New Dump</button>
     </>
