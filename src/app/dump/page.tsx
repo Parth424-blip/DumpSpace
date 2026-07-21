@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import DumpForm from "@/app/components/DumpForm";
 
-async function DumpPage() {
+export default async function DumpPage() {
   const supabase = await createClient();
   const { data: user } = await supabase.auth.getUser();
   if (!user.user) {
@@ -10,10 +10,8 @@ async function DumpPage() {
   }
 
   return (
-    <>
+    <main className="flex-1 flex bg-black">
       <DumpForm />
-    </>
+    </main>
   );
 }
-
-export default DumpPage;
